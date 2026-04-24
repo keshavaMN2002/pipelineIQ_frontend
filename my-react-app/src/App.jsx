@@ -1,11 +1,33 @@
-import React from 'react'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import UploadPage from "./pages/UploadPage";
+import Dashboard from "./pages/Dashboard";
+import Navbar from "./components/Navbar";
+import bg from "./assets/bg.jpg";
 
-const App = () => {
+function App() {
   return (
-    <div className='text-blue-500 text-xl font-bold'>
-      Hello World
-    </div>
-  )
+    <BrowserRouter>
+      {/* BACKGROUND IMAGE */}
+      <div
+        className="min-h-screen bg-cover bg-center bg-no-repeat text-white"
+        style={{ backgroundImage: `url(${bg})` }}
+      >
+        {/* DARK OVERLAY */}
+        <div className="min-h-screen bg-black/70 backdrop-blur-sm">
+
+          {/* NAVBAR */}
+          <Navbar />
+
+          {/* ROUTES */}
+          <Routes>
+            <Route path="/" element={<UploadPage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Routes>
+
+        </div>
+      </div>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
