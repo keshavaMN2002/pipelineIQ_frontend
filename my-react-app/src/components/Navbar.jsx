@@ -5,6 +5,7 @@ export default function Navbar() {
         bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl shadow-lg">
 
         <div className="flex items-center gap-2 font-semibold">
+            
           PipelineIQ
         </div>
 

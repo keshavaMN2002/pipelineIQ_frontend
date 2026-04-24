@@ -5,8 +5,10 @@ import axios from "axios";
 export default function UploadPage() {
   const [yaml, setYaml] = useState("");
   const [activeTab, setActiveTab] = useState("paste");
+  const [fileName, setFileName] = useState(""); // ✅ NEW STATE
   const navigate = useNavigate();
 
+  // 📁 Handle File Upload
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -16,23 +18,26 @@ export default function UploadPage() {
       return;
     }
 
+    setFileName(file.name); // ✅ store file name
+
     const reader = new FileReader();
     reader.onload = (e) => setYaml(e.target.result);
     reader.readAsText(file);
   };
 
+  // 🚀 Analyze
   const handleAnalyze = async () => {
     if (!yaml.trim()) return alert("Add YAML first");
 
     try {
-        console.log(yaml)
       const res = await axios.post("http://localhost:8080/analyze", {
         yaml,
-      }); 
-      
+      });
 
       navigate("/dashboard", { state: res.data });
+
     } catch {
+      // fallback demo mode
       navigate("/dashboard", {
         state: {
           estimated_time: 35,
@@ -71,7 +76,10 @@ export default function UploadPage() {
         {/* TABS */}
         <div className="flex mb-5">
           <button
-            onClick={() => setActiveTab("paste")}
+            onClick={() => {
+              setActiveTab("paste");
+              setFileName(""); // reset
+            }}
             className={`flex-1 pb-2 text-sm ${
               activeTab === "paste"
                 ? "text-blue-400 border-b-2 border-blue-500"
@@ -104,12 +112,20 @@ export default function UploadPage() {
         ) : (
           <label className="flex flex-col items-center justify-center h-44 border border-dashed border-white/20 rounded-xl cursor-pointer hover:border-blue-400 transition">
 
-            {/* + ICON */}
-            <div className="text-4xl text-blue-400">+</div>
-
-            <p className="mt-2 text-gray-400 text-sm">
-              Click to upload YAML file
-            </p>
+            {fileName ? (
+              <>
+                <div className="text-green-400 text-2xl">✔</div>
+                <p className="mt-2 text-sm">{fileName}</p>
+                <p className="text-xs text-gray-400">File uploaded</p>
+              </>
+            ) : (
+              <>
+                <div className="text-4xl text-blue-400">+</div>
+                <p className="mt-2 text-gray-400 text-sm">
+                  Click to upload YAML file
+                </p>
+              </>
+            )}
 
             <input
               type="file"
